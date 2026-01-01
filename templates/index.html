@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>메이플 경험치 비교</title>
+    <style>
+        .bar {
+            background: #4caf50;
+            height: 20px;
+        }
+        .container {
+            width: 300px;
+            background: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>메이플 경험치 비교</h1>
+
+    {% for c in characters %}
+        <h3>{{ loop.index }}위 - {{ c.name }}</h3>
+        <p>레벨: {{ c.level }}</p>
+        <p>경험치: {{ c.exp_rate }}%</p>
+
+        <div class="container">
+            <div class="bar" style="width: {{ c.exp_rate }}%"></div>
+        </div>
+        <hr>
+    {% endfor %}
+</body>
+</html>
