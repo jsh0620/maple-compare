@@ -18,12 +18,12 @@
     <h1>메이플 경험치 비교</h1>
 
     {% for c in characters %}
-        <h3>{{ loop.index }}위 - {{ c.name }}</h3>
-        <p>레벨: {{ c.level }}</p>
-        <p>경험치: {{ c.exp_rate }}%</p>
+        <h2>{{ loop.index }}위 - {{ char.name }}</h2>
+        <p>레벨: {{ char.level }}</p>
+        <p>경험치: {{ "%.3f"|format(char.exp_rate) }}%</p>
 
-        <div class="container">
-            <div class="bar" style="width: {{ c.exp_rate }}%"></div>
+        <div class="bar-bg">
+            <div class="bar-fill" style="width: {{ char.exp_rate }}%"></div>
         </div>
         <hr>
     {% endfor %}
