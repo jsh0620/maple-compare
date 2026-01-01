@@ -4,40 +4,60 @@ from flask import Flask, render_template
 
 app = Flask(__name__)
 
+# Render / 로컬 공통 환경변수
 API_KEY = os.getenv("NEXON_API_KEY")
+
 HEADERS = {
     "x-nxopen-api-key": API_KEY
 }
 
+# 고정 캐릭터
 CHARACTERS = ["란도좀", "키네시스"]
 
+
 def get_character_data(name):
-    # 1️⃣ ocid 조회
-    ocid_url = f"https://open.api.nexon.com/maplestory/v1/id?character_name={name}"
+    # 1️⃣ OCID 조회
+    ocid_url = (
+        "https://open.api.nexon.com/maplestory/v1/id"
+        f"?character_name={name}"
+    )
     ocid_res = requests.get(ocid_url, headers=HEADERS).json()
+
+    if "ocid" not in ocid_res:
+        print("OCID ERROR:", ocid_res)
+        return None
+
     ocid = ocid_res["ocid"]
 
-    # 2️⃣ basic 정보 조회
-    basic_url = f"https://open.api.nexon.com/maplestory/v1/character/basic?ocid={ocid}"
+    # 2️⃣ BASIC 정보 조회 (레벨 + 경험치)
+    basic_url = (
+        "https://open.api.nexon.com/maplestory/v1/character/basic"
+        f"?ocid={ocid}"
+    )
     basic_res = requests.get(basic_url, headers=HEADERS).json()
 
-    level = int(basic_res["character_level"])
-    exp_rate = float(basic_res["character_exp_rate"])  # ⭐ 핵심 수정
+    if "character_level" not in basic_res:
+        print("BASIC API ERROR:", basic_res)
+        return None
 
     return {
         "name": name,
-        "level": level,
-        "exp_rate": exp_rate
+        "level": int(basic_res["character_level"]),
+        # 🔥 정렬 핵심: float으로 저장
+        "exp_rate": float(basic_res["character_exp_rate"])
     }
+
 
 @app.route("/")
 def index():
     data = []
 
     for name in CHARACTERS:
-        data.append(get_character_data(name))
+        char = get_character_data(name)
+        if char:
+            data.append(char)
 
-    # ✅ 레벨 → 경험치 내림차순 정렬
+    # ✅ 레벨 → 경험치 퍼센트 기준 내림차순
     data.sort(
         key=lambda x: (x["level"], x["exp_rate"]),
         reverse=True
@@ -45,5 +65,6 @@ def index():
 
     return render_template("index.html", data=data)
 
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000)

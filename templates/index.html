@@ -4,20 +4,21 @@
     <meta charset="UTF-8">
     <title>메이플 경험치 비교</title>
     <style>
-        .bar {
-            background: #4caf50;
-            height: 20px;
-        }
-        .container {
+        .bar-bg {
             width: 300px;
             background: #ddd;
+            height: 20px;
+        }
+        .bar-fill {
+            background: #4caf50;
+            height: 20px;
         }
     </style>
 </head>
 <body>
     <h1>메이플 경험치 비교</h1>
 
-    {% for c in characters %}
+    {% for char in data %}
         <h2>{{ loop.index }}위 - {{ char.name }}</h2>
         <p>레벨: {{ char.level }}</p>
         <p>경험치: {{ "%.3f"|format(char.exp_rate) }}%</p>
