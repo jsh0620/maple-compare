@@ -12,7 +12,7 @@ HEADERS = {
 }
 
 # 고정 캐릭터
-CHARACTERS = ["란도좀", "키ne네시s"]
+CHARACTERS = ["렌도좀", "키ne네시s", "Nerix", "먹은탐켄치"]
 
 
 def get_character_data(name):
